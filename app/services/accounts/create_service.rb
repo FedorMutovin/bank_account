@@ -1,8 +1,12 @@
 class Accounts::CreateService
   def initialize(user_id)
     @user_id = user_id
-    @number = SecureRandom.hex
+    @number = SecureRandom.hex # just for example
     @default_balance = 0
+  end
+
+  def self.call(user_id)
+    new(user_id).call
   end
 
   def call

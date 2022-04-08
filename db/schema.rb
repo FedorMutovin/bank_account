@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_04_07_203241) do
+ActiveRecord::Schema[7.0].define(version: 2022_04_08_124220) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -24,6 +24,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_07_203241) do
     t.index ["user_id"], name: "index_accounts_on_user_id"
   end
 
+  create_table "credits", force: :cascade do |t|
+    t.float "amount", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_credits_on_user_id"
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.string "session_id", null: false
     t.text "data"
@@ -31,6 +39,27 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_07_203241) do
     t.datetime "updated_at", null: false
     t.index ["session_id"], name: "index_sessions_on_session_id", unique: true
     t.index ["updated_at"], name: "index_sessions_on_updated_at"
+  end
+
+  create_table "transactions", force: :cascade do |t|
+    t.float "amount", null: false
+    t.string "successful", default: "f", null: false
+    t.bigint "sender_account_id", null: false
+    t.bigint "recipient_account_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recipient_account_id"], name: "index_transactions_on_recipient_account_id"
+    t.index ["sender_account_id"], name: "index_transactions_on_sender_account_id"
+  end
+
+  create_table "transfers", force: :cascade do |t|
+    t.float "amount", null: false
+    t.bigint "sender_id", null: false
+    t.bigint "recipient_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recipient_id"], name: "index_transfers_on_recipient_id"
+    t.index ["sender_id"], name: "index_transfers_on_sender_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -51,4 +80,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_07_203241) do
   end
 
   add_foreign_key "accounts", "users"
+  add_foreign_key "credits", "users"
+  add_foreign_key "transactions", "accounts", column: "recipient_account_id"
+  add_foreign_key "transactions", "accounts", column: "sender_account_id"
+  add_foreign_key "transfers", "users", column: "recipient_id"
+  add_foreign_key "transfers", "users", column: "sender_id"
 end
