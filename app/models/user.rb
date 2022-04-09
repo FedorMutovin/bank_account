@@ -5,11 +5,13 @@ class User < ApplicationRecord
   has_many :transfers, foreign_key: :sender_id, dependent: :destroy, inverse_of: :sender
   has_many :transfers, foreign_key: :recipient_id, dependent: :destroy, inverse_of: :recipient
 
-  after_create :create_account, if: -> { account.nil? }
-
-  private
-
-  def create_account
-    Accounts::CreateService.call(id)
+  def get_credit(amount)
+    credit_service = Credits::CreateService.call(
+      user: self,
+      amount: amount,
+      account: account,
+      bank_account: Account.bank_accounts.last
+    )
+    credit_service.success? ? credit_service.credit : credit_service.errors
   end
 end

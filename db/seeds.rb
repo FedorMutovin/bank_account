@@ -1,2 +1,2 @@
 bank_user = User.create(email: 'bank@account.com', password: '12345678')
-Account.find_by(user_id: bank_user&.id)&.update(balance: 100000000000000.0)
+Account.create!(balance: 10000000000, bank_account: true, user_id: bank_user.id, number: '111111')

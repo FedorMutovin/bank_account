@@ -6,4 +6,6 @@ class Account < ApplicationRecord
   validates :number, :balance, presence: true
   validates :number, uniqueness: { case_sensitive: false }
   validates :balance, numericality: { only_float: true, greater_than_or_equal_to: 0 }
+
+  scope :bank_accounts, -> { where(bank_account: true) }
 end
