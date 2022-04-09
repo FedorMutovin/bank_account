@@ -8,6 +8,28 @@ RSpec.describe User, type: :model do
   it { is_expected.to validate_presence_of :email }
   it { is_expected.not_to allow_value('79').for(:email) }
 
+  describe 'self.create_with_account(params)' do
+    it 'creates User with Account' do
+      result = described_class.create_with_account(email: 'test@user.com', password: '12345678')
+      expect(result).is_a?(Array)
+      expect(result.first).to be_an_instance_of(described_class)
+      expect(result.second).to be_an_instance_of(Account)
+      expect(described_class.count).to eq(1)
+      expect(Account.count).to eq(1)
+    end
+
+    context 'when user already created' do
+      let!(:user) { create(:user, email: 'test@user.com') }
+
+      it 'creates User with Account' do
+        result = described_class.create_with_account(email: 'test@user.com', password: '12345678')
+        expect(result).to be_nil
+        expect(described_class.count).to eq(1)
+        expect(Account.count).to be_zero
+      end
+    end
+  end
+
   describe 'get_credit' do
     let!(:account) { create(:account) }
     let!(:bank_account) { create(:account, :bank) }

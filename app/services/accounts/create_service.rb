@@ -1,22 +1,36 @@
-class Accounts::CreateService
-  def initialize(user_id)
-    @user_id = user_id
+class Accounts::CreateService < ApplicationService
+  attr_reader :account
+
+  def initialize(params)
+    super
+    @user = @params[:user]
+    @balance = Account::DEFAULT_BALANCE
+    @bank_account = Account::BANK_ACCOUNT_DEFAULT_VALUE
     @number = SecureRandom.hex # just for example
-    @default_balance = 0
   end
 
-  def self.call(user_id)
-    new(user_id).call
-  end
-
-  def call
+  def process
     create_account!
-    self
   end
 
   private
 
+  def schema
+    Dry::Schema.Params do
+      required(:user).filled(Types.Instance(User))
+    end
+  end
+
   def create_account!
-    Account.create(number: @number, balance: @default_balance, user_id: @user_id)
+    return fail!('User can have only one account') if @user.account.present?
+
+    @account = Account.new(
+      balance: @balance,
+      number: @number,
+      user: @user,
+      bank_account: @bank_account
+    )
+
+    fail!(@account.errors) unless @account.save
   end
 end
