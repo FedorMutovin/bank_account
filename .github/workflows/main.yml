@@ -41,10 +41,11 @@ jobs:
           POSTGRES_PASSWORD: ${{ env.POSTGRESQL_PASSWORD }}
     steps:
       - uses: actions/checkout@v2
+      - run: |
+          - sudo apt update
       - uses: actions/setup-ruby@v1
       - name: Install dependencies
         run: |
-          sudo apt update
           sudo apt-get -yqq install libpq-dev build-essential libcurl4-openssl-dev
           gem install bundler:2.2.3
           bundle install --jobs 4 --retry 3
