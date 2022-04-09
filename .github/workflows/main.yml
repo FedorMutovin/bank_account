@@ -1,5 +1,4 @@
 env:
-  RUBY_VERSION: 3.0.0
   POSTGRESQL_USERNAME: postgres
   POSTGRESQL_PASSWORD: postgres
   POSTGRES_DB: postgres
@@ -11,10 +10,8 @@ jobs:
     name: Rubocop
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ env.RUBY_VERSION }}
       - name: Install Rubocop
         run: gem install rubocop
       - name: Install rubocop-performance
@@ -43,10 +40,8 @@ jobs:
           POSTGRES_USER: ${{ env.POSTGRESQL_USERNAME }}
           POSTGRES_PASSWORD: ${{ env.POSTGRESQL_PASSWORD }}
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - uses: actions/setup-ruby@v1
-        with:
-          ruby-version: ${{ env.RUBY_VERSION }}
       - uses: actions/setup-node@v1
       - name: Install dependencies
         run: |
