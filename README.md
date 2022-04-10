@@ -1,5 +1,5 @@
 ## About
-Simple bank app where you can get credit to your balance and send money to other users
+Simple bank app where you can get credit and send money to other users
 ## Things to do
 * cp database.yml.example database.yml
 * run bin/rails db:seed to create bank user account, who can give you a credit
