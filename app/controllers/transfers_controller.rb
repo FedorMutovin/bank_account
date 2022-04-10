@@ -1,10 +1,14 @@
 class TransfersController < ApplicationController
   before_action :recipient_account, only: %i[create]
 
-  def new; end
+  def new
+    redirect_to root_path if current_user.account.nil?
+  end
 
   def create
-    if @recipient_account.nil? || transfer_service.failure?
+    if current_user.account.nil?
+      redirect_to root_path
+    elsif @recipient_account.nil? || transfer_service.failure?
       redirect_to new_transfer_path, notice: "Transfer didn't send"
     else
       redirect_to root_path, notice: 'Transfer was sent'

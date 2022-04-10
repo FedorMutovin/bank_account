@@ -50,5 +50,29 @@ RSpec.describe TransfersController, type: :controller do
         expect(response).to redirect_to user_session_path
       end
     end
+
+    context "when user doesn't have account" do
+      let!(:user) { create(:user) }
+
+      it "doesn't saves a new transfer in the database" do
+        sign_in(user)
+        expect do
+          post :create, params: { number: other_account.number,
+                                  amount: 100 }
+        end.not_to change(Transfer, :count)
+        expect(response).to redirect_to root_path
+      end
+    end
+  end
+
+  describe 'GET #new' do
+    let!(:user) { create(:user) }
+
+    context "when user doesn't have account" do
+      it "doesn't redirect to new_transfer_path" do
+        sign_in(user)
+        expect(get(:new)).to redirect_to root_path
+      end
+    end
   end
 end
