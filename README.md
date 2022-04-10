@@ -12,7 +12,7 @@ This project has instances:
 * Transfer - has 2 users, sender & recipient , may have Credit, has transaction
 * Transaction - has 2 accounts, sender_account & recipient_account and also transfer
 
-### User creating
+### Create User
 You can create user with bank account only via console, use  User.create_with_account(email, password) method for this.
 
 #### Example: User.create_with_account(email: 'user@user.user', password: '123')
@@ -25,6 +25,6 @@ This method allows you to get credit via console from bank, make sure that bank 
 
 #### Example: User.find_by(email: 'user@user.user').get_credit(10000)
 
-### Money transfering
+### Transfer Money
 
 You can send money to other user from UI, just use Send money to other user link button
