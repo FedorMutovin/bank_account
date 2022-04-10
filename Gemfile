@@ -53,9 +53,6 @@ gem 'activerecord-session_store'
 # Authentication
 gem 'devise', '~> 4.8.1'
 
-# Authorization
-gem 'pundit'
-
 gem 'dry-schema'
 
 group :development, :test do

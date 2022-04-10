@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_04_08_135605) do
+ActiveRecord::Schema[7.0].define(version: 2022_04_07_224931) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -28,10 +28,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_08_135605) do
   create_table "credits", force: :cascade do |t|
     t.float "amount", null: false
     t.bigint "user_id", null: false
+    t.bigint "transfer_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "payment_transaction_id"
-    t.index ["payment_transaction_id"], name: "index_credits_on_payment_transaction_id"
+    t.index ["transfer_id"], name: "index_credits_on_transfer_id"
     t.index ["user_id"], name: "index_credits_on_user_id"
   end
 
@@ -46,7 +46,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_08_135605) do
 
   create_table "transactions", force: :cascade do |t|
     t.string "uuid", null: false
-    t.float "amount", null: false
     t.string "successful", default: "f", null: false
     t.bigint "sender_account_id", null: false
     t.bigint "recipient_account_id", null: false
@@ -59,11 +58,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_08_135605) do
 
   create_table "transfers", force: :cascade do |t|
     t.float "amount", null: false
+    t.string "category", null: false
     t.bigint "sender_id", null: false
     t.bigint "recipient_id", null: false
+    t.bigint "payment_transaction_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "payment_transaction_id"
+    t.index ["category"], name: "index_transfers_on_category"
     t.index ["payment_transaction_id"], name: "index_transfers_on_payment_transaction_id"
     t.index ["recipient_id"], name: "index_transfers_on_recipient_id"
     t.index ["sender_id"], name: "index_transfers_on_sender_id"
@@ -87,7 +88,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_08_135605) do
   end
 
   add_foreign_key "accounts", "users"
-  add_foreign_key "credits", "transactions", column: "payment_transaction_id"
+  add_foreign_key "credits", "transfers"
   add_foreign_key "credits", "users"
   add_foreign_key "transactions", "accounts", column: "recipient_account_id"
   add_foreign_key "transactions", "accounts", column: "sender_account_id"

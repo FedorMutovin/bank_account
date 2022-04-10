@@ -19,14 +19,13 @@ RSpec.describe Credits::CreateService do
   describe '.create_credit!' do
     context 'when credit creating is successful' do
       it 'creates credit' do
-        expect { create_service }.to change(Credit, :count).by(1)
         expect(create_service.credit).not_to be_nil
-        expect(user.credits.first&.payment_transaction&.successful).to be_truthy
+        expect(user.credits).not_to be_empty
       end
     end
 
     context 'when credit creating is not successful' do
-      context 'with bad params' do
+      context 'with invalid params' do
         context 'with bad params' do
           let(:params) do
             {

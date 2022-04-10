@@ -29,20 +29,25 @@ class Credits::CreateService < ApplicationService
     return fail!("Bank account can't get a credit") if @account.bank_account?
 
     Credit.transaction do
-      transaction_service = start_service_in_transaction(create_transaction!)
-      @credit = Credit.create!(
-        amount: @amount,
-        user_id: @user.id,
-        payment_transaction: transaction_service.transaction
-      )
+      @credit = Credit.new(credit_params)
+      fail!(@credit.errors) unless @credit.save
     end
   end
 
-  def create_transaction!
-    Transactions::CreateService.call(
+  def create_transfer!
+    Transfers::CreateService.call(
       sender_account: @bank_account,
       recipient_account: @account,
-      amount: @amount
+      amount: @amount,
+      category: Transfer::ALLOWED_CATEGORIES[:credit]
     )
+  end
+
+  def credit_params
+    {
+      amount: @amount,
+      user_id: @user.id,
+      transfer: start_service_in_transaction(create_transfer!).transfer
+    }
   end
 end

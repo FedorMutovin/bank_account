@@ -18,10 +18,9 @@ RSpec.describe Transactions::CreateService do
     context 'when transaction creating is successful' do
       it 'creates transaction' do
         expect { create_service }.to change(Transaction, :count).by(1)
-        expect(create_service.transaction.sender_account).to eq(other_account)
-        expect(create_service.transaction.recipient_account).to eq(account)
-        expect(create_service.transaction.successful).to be_truthy
-        expect(create_service.transaction.uuid).not_to be_nil
+        expect(account.transactions.first.successful).to be_truthy
+        expect(other_account.transactions.first.successful).to be_truthy
+        expect(create_service.transaction).not_to be_nil
       end
     end
 

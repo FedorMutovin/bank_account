@@ -1,3 +1,13 @@
 <div>
-  <%= render current_user.account %>
+  <% if current_user.account.present? %>
+    <%= render @account %>
+    <%= render 'transfers/transfers_table' %>
+    <% unless @account.bank_account? %>
+      <p><%= link_to 'Send money to other user', new_transfer_path, method: :post %></p>
+    <% end %>
+  <% else %>
+    <p>
+      You don't have account yet
+    </p>
+  <% end %>
 </div>

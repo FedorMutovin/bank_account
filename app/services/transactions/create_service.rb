@@ -27,7 +27,8 @@ class Transactions::CreateService < ApplicationService
       @sender_account.lock!
       @recipient_account.lock!
       start_service_in_transaction(update_accounts_balance!)
-      @transaction = Transaction.create!(transaction_params)
+      @transaction = Transaction.new(transaction_params)
+      fail!(@transaction.errors) unless @transaction.save
     end
   end
 
@@ -41,7 +42,6 @@ class Transactions::CreateService < ApplicationService
 
   def transaction_params
     {
-      amount: @amount,
       sender_account_id: @sender_account.id,
       recipient_account_id: @recipient_account.id,
       successful: true,

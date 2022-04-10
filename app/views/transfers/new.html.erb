@@ -1,0 +1,8 @@
+<p>Send transfer to other user</p>
+<%= form_with url: transfers_path, method: :post do |form| %>
+  <%= form.label :number %>
+  <%= form.text_field :number, label: :number %>
+  <%= form.label :amount %>
+  <%= form.number_field :amount %>
+  <%= form.submit :send  %>
+<% end  %>

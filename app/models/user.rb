@@ -2,8 +2,16 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :recoverable, :validatable, :trackable, :timeoutable
   has_one :account, dependent: :destroy
   has_many :credits, dependent: :destroy
-  has_many :transfers, foreign_key: :sender_id, dependent: :destroy, inverse_of: :sender
-  has_many :transfers, foreign_key: :recipient_id, dependent: :destroy, inverse_of: :recipient
+  has_many :sender_transfers,
+           foreign_key: :sender_id,
+           dependent: :destroy,
+           inverse_of: :sender,
+           class_name: 'Transfer'
+  has_many :recipient_transfers,
+           foreign_key: :recipient_id,
+           dependent: :destroy,
+           inverse_of: :recipient,
+           class_name: 'Transfer'
 
   def self.create_with_account(params)
     User.transaction do
@@ -13,6 +21,13 @@ class User < ApplicationRecord
 
       [user_service.user, account_service.account]
     end
+  end
+
+  def transfers
+    Transfer
+      .includes(%i[recipient sender])
+      .where('recipient_id = :id or sender_id = :id', { id: id })
+      .order(created_at: :desc)
   end
 
   def get_credit(amount)
